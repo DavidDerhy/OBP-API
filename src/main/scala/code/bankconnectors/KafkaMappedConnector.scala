@@ -178,7 +178,8 @@ object KafkaMappedConnector extends Connector with CreateViewImpls with Loggable
 
   //gets banks handled by this connector
   override def getBanks: List[Bank] = {
-    val banks : Iterable[JBank] = connector.getBanks(new OutboundContext(null, null, null))
+    val banksWrapper = connector.getBanks(new OutboundContext(null, null, null))
+    val banks : Iterable[JBank] = banksWrapper.banks
 
     //Loop through list of responses and create entry for each
     val res = {
