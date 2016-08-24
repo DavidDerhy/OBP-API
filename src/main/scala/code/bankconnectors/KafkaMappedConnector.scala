@@ -37,7 +37,7 @@ object KafkaMappedConnector extends Connector with CreateViewImpls with Loggable
   type JBank = com.tesobe.obp.transport.Bank
   type OutboundContext = com.tesobe.obp.transport.OutboundContext
 
-  val factory : Factory = Transport.factory(Transport.Version.v1, Transport.Encoding.json).get
+  val factory : Factory = Transport.factory(Transport.Version.v0, Transport.Encoding.json).get
   //todo get topic names from the props
   val north: SimpleNorth = new SimpleNorth("Request", "Response") // Kafka
   val connector : com.tesobe.obp.transport.Connector = factory.connector(north)
@@ -228,7 +228,7 @@ object KafkaMappedConnector extends Connector with CreateViewImpls with Loggable
 
   // Gets bank identified by bankId
   override def getBank(id: BankId): Box[Bank] = {
-    val bank : Optional[JBank] = connector.getBank(id.value, new OutboundContext(null, null, null))
+    val bank : Optional[JBank] = connector.getBank(id.value, new OutboundContext(null, null, null)).bank
     if(bank.isPresent) {
       val b : JBank = bank.get
       Full(KafkaBank(KafkaInboundBank(b.id, b.shortName, b.fullName, b.logo, b.url)))
